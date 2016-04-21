@@ -13,11 +13,10 @@ import org.apache.phoenix.parse.FunctionParseNode.BuiltInFunction;
 import org.apache.phoenix.schema.tuple.Tuple;
 import org.apache.phoenix.schema.types.PDataType;
 import org.apache.phoenix.schema.types.PVarchar;
-import org.apache.phoenix.util.ByteUtil;
 
 /**
  * 
- * CHARLENGTH(field,"8-160")
+ * CHARLENGTH(field,"8-160","Y or N")
  *
  */
 @BuiltInFunction(name = CharLength.NAME, args = { @Argument(allowedTypes = { PVarchar.class }),
@@ -26,6 +25,8 @@ public class CharLength extends ScalarFunction {
 	public static final String NAME = "CHARLENGTH";
 
 	private String strToFormu = null;
+	
+	private String yOrn = null;
 
 	public CharLength() {}
 
@@ -42,6 +43,13 @@ public class CharLength extends ScalarFunction {
 				this.strToFormu = strToSearchValue.toString();
 			}
 		}
+		Expression yOrnExpression = getChildren().get(2);
+		if (yOrnExpression instanceof LiteralExpression) {
+			Object yOrn = ((LiteralExpression) yOrnExpression).getValue();
+			if (yOrn != null) {
+				this.yOrn = yOrn.toString();
+			}
+		}
 	}
 
 	public boolean evaluate(Tuple tuple, ImmutableBytesWritable ptr) {
@@ -52,7 +60,7 @@ public class CharLength extends ScalarFunction {
 		}
 
 		if (ptr.getLength() == 0) {
-			ptr.set(ByteUtil.EMPTY_BYTE_ARRAY);
+			ptr.set(PVarchar.INSTANCE.toBytes("false"));
 			return true;
 		}
 		
