@@ -42,11 +42,13 @@ public class CharFormat extends ScalarFunction {
 		}
 		String field = (String) PVarchar.INSTANCE.toObject(ptr, getChildren().get(0).getSortOrder());
 		
-		Pattern p = Pattern.compile("[^0-9A-Z]");
+		Pattern p = Pattern.compile("[0-9A-Z]");
 	    Matcher m = p.matcher(field);
-	     if (m.find()) {
+	     if(m.find()) {
+	    	 System.out.println("f1:"+field);
 	        ptr.set(PVarchar.INSTANCE.toBytes("true"));
 	     } else {
+	    	 System.out.println("f1:"+field);
 	        ptr.set(PVarchar.INSTANCE.toBytes("false"));
 	     }
 		  return true;
