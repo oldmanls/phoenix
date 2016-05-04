@@ -21,16 +21,16 @@ import org.apache.phoenix.schema.types.PVarchar;
  * ORGANIZATION(field)='true'
  *
  */
-@BuiltInFunction(name = fun_organization_code.NAME, 
+@BuiltInFunction(name = OrganizationCodeFunction.NAME, 
        args = { @Argument(allowedTypes = { PVarchar.class }) })
-public class fun_organization_code extends ScalarFunction {
+public class OrganizationCodeFunction extends ScalarFunction {
 	public static final String NAME = "ORGANIZATION";
 
 	public static final PDataType TYPE = PVarchar.INSTANCE;
 
-	public fun_organization_code() {}
+	public OrganizationCodeFunction() {}
 
-	public fun_organization_code(List<Expression> children) {
+	public OrganizationCodeFunction(List<Expression> children) {
 		super(children);
 	}
 

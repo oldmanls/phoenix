@@ -13,20 +13,19 @@ import org.apache.phoenix.schema.types.PDataType;
 import org.apache.phoenix.schema.types.PVarchar;
 
 /**
- * Author LS 2015/04/21 CHARLENGTH(field,"8-160","Y or N")
+ * Author LS 2015/04/21 CHARLENGTH(field,"8-160")
  */
-@BuiltInFunction(name = CharLength.NAME, args = { @Argument(allowedTypes = { PVarchar.class }),
-		@Argument(allowedTypes = { PVarchar.class }, isConstant = true),
+@BuiltInFunction(name = CharLengthFunction.NAME, args = { @Argument(allowedTypes = { PVarchar.class }),
 		@Argument(allowedTypes = { PVarchar.class }, isConstant = true) })
-public class CharLength extends ScalarFunction {
+public class CharLengthFunction extends ScalarFunction {
 	public static final String NAME = "CHARLENGTH";
 
 	private static final PDataType TYPE = PVarchar.INSTANCE;
 
-	public CharLength() {
+	public CharLengthFunction() {
 	}
 
-	public CharLength(List<Expression> children) throws SQLException {
+	public CharLengthFunction(List<Expression> children) throws SQLException {
 		super(children);
 	}
 
@@ -38,13 +37,6 @@ public class CharLength extends ScalarFunction {
 
 		String formu = (String) getFormuExpression().getDataType().toObject(ptr, getFormuExpression().getSortOrder());
 
-		if (!getYesOrNoExpression().evaluate(tuple, ptr)) {
-			return false;
-		}
-
-		String yesOrNo = (String) getYesOrNoExpression().getDataType().toObject(ptr,
-				getYesOrNoExpression().getSortOrder());
-
 		if (!getSourceStrExpression().evaluate(tuple, ptr)) {
 			return false;
 		}
@@ -52,34 +44,20 @@ public class CharLength extends ScalarFunction {
 		String sourceStr = (String) getSourceStrExpression().getDataType().toObject(ptr,
 				getSourceStrExpression().getSortOrder());
 
-		// 得到字段值为空
-		if (ptr.getLength() == 0) {
-			ptr.set(PVarchar.INSTANCE.toBytes("false"));
-			// 如果不允许为空
-			if (yesOrNo.equals("N")) {
-				ptr.set(PVarchar.INSTANCE.toBytes("false"));
-				// 如果允许为空
-			} else {
+		if (formu.contains("-")) {
+			int min = Integer.parseInt(formu.split("-")[0]);
+			int max = Integer.parseInt(formu.split("-")[1]);
+			if (sourceStr.length() >= min && sourceStr.length() <= max) {
 				ptr.set(PVarchar.INSTANCE.toBytes("true"));
-			}
-			// 得到的字段值不为空
-		} else {
-			ptr.set(PVarchar.INSTANCE.toBytes("true"));
-			if (formu.contains("-")) {
-				int min = Integer.parseInt(formu.split("-")[0]);
-				int max = Integer.parseInt(formu.split("-")[1]);
-				if (sourceStr.length() >= min && sourceStr.length() <= max) {
-					ptr.set(PVarchar.INSTANCE.toBytes("true"));
-				} else {
-					ptr.set(PVarchar.INSTANCE.toBytes("false"));
-				}
 			} else {
-				int max1 = Integer.parseInt(formu);
-				if (sourceStr.length() <= max1) {
-					ptr.set(PVarchar.INSTANCE.toBytes("true"));
-				} else {
-					ptr.set(PVarchar.INSTANCE.toBytes("false"));
-				}
+				ptr.set(PVarchar.INSTANCE.toBytes("false"));
+			}
+		} else {
+			int max1 = Integer.parseInt(formu);
+			if (sourceStr.length() <= max1) {
+				ptr.set(PVarchar.INSTANCE.toBytes("true"));
+			} else {
+				ptr.set(PVarchar.INSTANCE.toBytes("false"));
 			}
 		}
 		return true;
@@ -93,11 +71,6 @@ public class CharLength extends ScalarFunction {
 	// 获取公式
 	private Expression getFormuExpression() {
 		return children.get(1);
-	}
-
-	// 获取是否可为空标志,"Y"=可谓空，"N"=不可为空
-	private Expression getYesOrNoExpression() {
-		return children.get(2);
 	}
 
 	public PDataType getDataType() {

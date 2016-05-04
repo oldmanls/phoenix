@@ -12,28 +12,24 @@ import org.apache.phoenix.parse.FunctionParseNode;
 import org.apache.phoenix.schema.tuple.Tuple;
 import org.apache.phoenix.schema.types.PDataType;
 import org.apache.phoenix.schema.types.PVarchar;
-@FunctionParseNode.BuiltInFunction(name = "BANKCODE", args = {
+@FunctionParseNode.BuiltInFunction(name = "IDCODE", args = {
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class }) })
-public class fun_bank_codeFunction extends ScalarFunction{
-	public static final String NAME="BANKCODE";
+public class IdCodeFunction extends ScalarFunction{
+	public static final String NAME="IDCODE";
 	private static final PDataType TYPE = PVarchar.INSTANCE;
-	public fun_bank_codeFunction(){}
-	public fun_bank_codeFunction(List<Expression> children) throws SQLException {
+	public IdCodeFunction(){}
+	public IdCodeFunction(List<Expression> children) throws SQLException {
 		super(children);
 	}
 	@Override
 	public boolean evaluate(Tuple tuple, ImmutableBytesWritable ptr) {
-		if(!getBankCodeExpression().evaluate(tuple, ptr)){
+		if(!getIDCodeExpression().evaluate(tuple, ptr)){
 			return false;
 		};
-		String bankCode=(String) getBankCodeExpression().getDataType().toObject(ptr, getBankCodeExpression().getSortOrder());
-		if (bankCode.length() != 15) {
-			ptr.set(PVarchar.INSTANCE.toBytes("false"));
-			return true;
-		}
-		String formu = "([A-Z]{1})([0-9]{4})([A-Z]{1})([1-3]{1})([0-9]{8})";
+		String IDCode=(String) getIDCodeExpression().getDataType().toObject(ptr, getIDCodeExpression().getSortOrder());
+		String formu = "(^[0-9]{17}[0-9|x]$)|(^[0-9]{15}$)";
 	    Pattern p = Pattern.compile(formu);
-	    Matcher m = p.matcher(bankCode);
+	    Matcher m = p.matcher(IDCode);
 	    if (m.find()) {
 	        ptr.set(PVarchar.INSTANCE.toBytes("true"));
 	        return true;
@@ -42,7 +38,7 @@ public class fun_bank_codeFunction extends ScalarFunction{
 	        return true;
 	    }
 	}
-	private Expression getBankCodeExpression() {
+	private Expression getIDCodeExpression() {
 		return children.get(0);
 	}
 	@Override

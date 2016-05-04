@@ -19,11 +19,11 @@ import org.apache.phoenix.schema.types.PInteger;
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PDouble.class}),
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PInteger.class },isConstant = true),
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PInteger.class },isConstant = true) })
-public class fun_numlengthFunction extends ScalarFunction{
+public class NumLengthFunction extends ScalarFunction{
 	public static final String NAME="NUMLENGTH";
 	private static final PDataType TYPE = PVarchar.INSTANCE;
-	public fun_numlengthFunction(){}
-	public fun_numlengthFunction(List<Expression> children) throws SQLException {
+	public NumLengthFunction(){}
+	public NumLengthFunction(List<Expression> children) throws SQLException {
 		super(children);
 	}
 	private Integer ilength;

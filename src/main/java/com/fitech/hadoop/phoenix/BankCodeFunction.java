@@ -12,25 +12,28 @@ import org.apache.phoenix.parse.FunctionParseNode;
 import org.apache.phoenix.schema.tuple.Tuple;
 import org.apache.phoenix.schema.types.PDataType;
 import org.apache.phoenix.schema.types.PVarchar;
-
-@FunctionParseNode.BuiltInFunction(name = "CURRENCYCODE", args = {
+@FunctionParseNode.BuiltInFunction(name = "BANKCODE", args = {
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class }) })
-public class fun_currency_codeFunction extends ScalarFunction {
-	public static final String NAME="CURRENCYCODE";
+public class BankCodeFunction extends ScalarFunction{
+	public static final String NAME="BANKCODE";
 	private static final PDataType TYPE = PVarchar.INSTANCE;
-	public fun_currency_codeFunction(){}
-	public fun_currency_codeFunction(List<Expression> children) throws SQLException {
+	public BankCodeFunction(){}
+	public BankCodeFunction(List<Expression> children) throws SQLException {
 		super(children);
 	}
 	@Override
 	public boolean evaluate(Tuple tuple, ImmutableBytesWritable ptr) {
-		if(!getCurrencyCodeExpression().evaluate(tuple, ptr)){
+		if(!getBankCodeExpression().evaluate(tuple, ptr)){
 			return false;
 		};
-		String currencyCode=(String) getCurrencyCodeExpression().getDataType().toObject(ptr, getCurrencyCodeExpression().getSortOrder());
-		String formu = "^[A-Za-z]{3}";
+		String bankCode=(String) getBankCodeExpression().getDataType().toObject(ptr, getBankCodeExpression().getSortOrder());
+		if (bankCode.length() != 15) {
+			ptr.set(PVarchar.INSTANCE.toBytes("false"));
+			return true;
+		}
+		String formu = "([A-Z]{1})([0-9]{4})([A-Z]{1})([1-3]{1})([0-9]{8})";
 	    Pattern p = Pattern.compile(formu);
-	    Matcher m = p.matcher(currencyCode);
+	    Matcher m = p.matcher(bankCode);
 	    if (m.find()) {
 	        ptr.set(PVarchar.INSTANCE.toBytes("true"));
 	        return true;
@@ -39,7 +42,7 @@ public class fun_currency_codeFunction extends ScalarFunction {
 	        return true;
 	    }
 	}
-	private Expression getCurrencyCodeExpression() {
+	private Expression getBankCodeExpression() {
 		return children.get(0);
 	}
 	@Override
@@ -50,4 +53,5 @@ public class fun_currency_codeFunction extends ScalarFunction {
 	public String getName() {
 		return NAME;
 	}
+
 }

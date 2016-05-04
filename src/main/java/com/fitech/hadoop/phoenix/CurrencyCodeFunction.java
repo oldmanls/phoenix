@@ -12,24 +12,25 @@ import org.apache.phoenix.parse.FunctionParseNode;
 import org.apache.phoenix.schema.tuple.Tuple;
 import org.apache.phoenix.schema.types.PDataType;
 import org.apache.phoenix.schema.types.PVarchar;
-@FunctionParseNode.BuiltInFunction(name = "IDCODE", args = {
+
+@FunctionParseNode.BuiltInFunction(name = "CURRENCYCODE", args = {
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class }) })
-public class fun_id_codeFunction extends ScalarFunction{
-	public static final String NAME="IDCODE";
+public class CurrencyCodeFunction extends ScalarFunction {
+	public static final String NAME="CURRENCYCODE";
 	private static final PDataType TYPE = PVarchar.INSTANCE;
-	public fun_id_codeFunction(){}
-	public fun_id_codeFunction(List<Expression> children) throws SQLException {
+	public CurrencyCodeFunction(){}
+	public CurrencyCodeFunction(List<Expression> children) throws SQLException {
 		super(children);
 	}
 	@Override
 	public boolean evaluate(Tuple tuple, ImmutableBytesWritable ptr) {
-		if(!getIDCodeExpression().evaluate(tuple, ptr)){
+		if(!getCurrencyCodeExpression().evaluate(tuple, ptr)){
 			return false;
 		};
-		String IDCode=(String) getIDCodeExpression().getDataType().toObject(ptr, getIDCodeExpression().getSortOrder());
-		String formu = "(^[0-9]{17}[0-9|x]$)|(^[0-9]{15}$)";
+		String currencyCode=(String) getCurrencyCodeExpression().getDataType().toObject(ptr, getCurrencyCodeExpression().getSortOrder());
+		String formu = "^[A-Za-z]{3}";
 	    Pattern p = Pattern.compile(formu);
-	    Matcher m = p.matcher(IDCode);
+	    Matcher m = p.matcher(currencyCode);
 	    if (m.find()) {
 	        ptr.set(PVarchar.INSTANCE.toBytes("true"));
 	        return true;
@@ -38,7 +39,7 @@ public class fun_id_codeFunction extends ScalarFunction{
 	        return true;
 	    }
 	}
-	private Expression getIDCodeExpression() {
+	private Expression getCurrencyCodeExpression() {
 		return children.get(0);
 	}
 	@Override
@@ -49,5 +50,4 @@ public class fun_id_codeFunction extends ScalarFunction{
 	public String getName() {
 		return NAME;
 	}
-
 }

@@ -19,18 +19,18 @@ import org.apache.phoenix.schema.types.PVarchar;
  * field涓篸ouble鍨�
  *
  */
-@BuiltInFunction(name = NumSize.NAME, args = { 
+@BuiltInFunction(name = NumSizeFunction.NAME, args = { 
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class }),
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class }, isConstant = true),
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class }, isConstant = true) })
-public class NumSize extends ScalarFunction{
+public class NumSizeFunction extends ScalarFunction{
 	public static final String NAME = "NUMSIZE";
 	public static final PDataType TYPE = PVarchar.INSTANCE;
 	protected String formu;
 	protected String yesOrNo;
 	
-    public NumSize(){}
-	public NumSize(List<Expression> children){
+    public NumSizeFunction(){}
+	public NumSizeFunction(List<Expression> children){
 		super(children);
 	}
 	

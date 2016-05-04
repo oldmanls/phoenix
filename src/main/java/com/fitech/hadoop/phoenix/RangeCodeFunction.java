@@ -20,11 +20,11 @@ import org.apache.phoenix.schema.types.PVarchar;
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class },isConstant = true),
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class },isConstant = true),
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class },isConstant = true) })
-public class fun_range_codeFunction extends ScalarFunction{
+public class RangeCodeFunction extends ScalarFunction{
 	public static final String NAME="RANGECODE";
 	private static final PDataType TYPE = PVarchar.INSTANCE;
-	public fun_range_codeFunction(){}
-	public fun_range_codeFunction(List<Expression> children) throws SQLException {
+	public RangeCodeFunction(){}
+	public RangeCodeFunction(List<Expression> children) throws SQLException {
 		super(children);
 	}
 	private String ifNUll;

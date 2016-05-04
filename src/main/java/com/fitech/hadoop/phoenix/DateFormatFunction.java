@@ -19,17 +19,17 @@ import org.apache.phoenix.schema.types.PVarchar;
  * DATEFORMAT(field,"yyyy-MM-dd")
  *
  */
-@BuiltInFunction(name = FunDateFormat.NAME, args = {
+@BuiltInFunction(name = DateFormatFunction.NAME, args = {
 		@Argument(allowedTypes = { PVarchar.class }),
 		@Argument(allowedTypes = { PVarchar.class }) })
-public class FunDateFormat extends ScalarFunction {
+public class DateFormatFunction extends ScalarFunction {
 	public static final String NAME = "DATEFORMAT";
 	public static final PDataType TYPE = PVarchar.INSTANCE;
 
-	public FunDateFormat() {
+	public DateFormatFunction() {
 	}
 
-	public FunDateFormat(List<Expression> children) throws SQLException {
+	public DateFormatFunction(List<Expression> children) throws SQLException {
 		super(children);
 	}
 

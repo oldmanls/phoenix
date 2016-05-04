@@ -21,16 +21,16 @@ import org.apache.phoenix.schema.types.PVarchar;
  * CHARFORMAT(field)='true'
  *
  */
-@BuiltInFunction(name = CharFormat.NAME, 
+@BuiltInFunction(name = CharFormatFunction.NAME, 
        args = { @Argument(allowedTypes = { PVarchar.class }) })
-public class CharFormat extends ScalarFunction {
+public class CharFormatFunction extends ScalarFunction {
 	public static final String NAME = "CHARFORMAT";
 
 	public static final PDataType TYPE = PVarchar.INSTANCE;
 
-	public CharFormat() {}
+	public CharFormatFunction() {}
 
-	public CharFormat(List<Expression> children) {
+	public CharFormatFunction(List<Expression> children) {
 		super(children);
 	}
 
