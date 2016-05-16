@@ -1,4 +1,4 @@
-package com.fitech.hadoop.phoenix;
+package oldversion;
 
 import java.io.DataInput;
 import java.io.IOException;
@@ -16,14 +16,12 @@ import org.apache.phoenix.schema.types.PVarchar;
 
 @FunctionParseNode.BuiltInFunction(name = "CHARCONTAIN", args = {
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class }),
-		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class }, isConstant = true),
 		@org.apache.phoenix.parse.FunctionParseNode.Argument(allowedTypes = { PVarchar.class }, isConstant = true) })
 public class CharContainFunction extends ScalarFunction {
 	public static final String NAME = "CHARCONTAIN";
 	private static final PDataType TYPE = PVarchar.INSTANCE;
 	protected String formu;
 	protected String yesOrNo;
-
 	public CharContainFunction(List<Expression> children) throws SQLException {
 		super(children);
 	}
